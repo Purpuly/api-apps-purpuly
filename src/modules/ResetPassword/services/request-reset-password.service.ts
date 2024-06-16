@@ -1,4 +1,5 @@
-import { HttpException, Injectable, Logger } from "@nestjs/common";
+import { REQUEST } from "@nestjs/core";
+import { HttpException, Inject, Injectable, Logger } from "@nestjs/common";
 import UserRepository from "@core/repositories/Authentication/User.repository";
 import errorCodes from "@shared/errors/error-codes";
 import RandomString from "@shared/utils/RandomString.utils";
@@ -8,15 +9,20 @@ const RESET_PASSWORD_TOKEN_LENGTH: number = 64;
 
 @Injectable()
 export default class RequestResetPasswordService {
+    private readonly applicationId: string;
+
     constructor(
+        @Inject(REQUEST) private readonly request: Request,
         private readonly userRepository: UserRepository,
         private readonly resetPasswordRepository: ResetPasswordRepository,
-    ) { }
+    ) {
+        this.applicationId = this.request['applicationId'];
+    }
 
     public async handle(
         user_email: string,
     ): Promise<any> {
-        const app_id = "random-app-id";
+        const app_id = this.applicationId;
 
         const userId: string | null = await this.userRepository.getUserIdFromUserEmail(user_email);
 
