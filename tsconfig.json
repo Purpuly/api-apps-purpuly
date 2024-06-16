@@ -4,6 +4,9 @@
       "@shared/*": [
         "src/shared/*"
       ],
+      "@core/*": [
+        "src/core/*"
+      ],
     },
     "module": "commonjs",
     "declaration": true,
