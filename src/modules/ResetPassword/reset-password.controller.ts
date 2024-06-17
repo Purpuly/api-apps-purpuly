@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Post, Query } from "@nestjs/common";
 import RequestResetPasswordService from "./services/request-reset-password.service";
 import MutationResetPasswordService from "./services/mutation-reset-password.service";
 import GetRequestDto from "./dto/get-request.dto";
@@ -15,18 +15,28 @@ export default class ResetPasswordController {
     ) { }
 
     @Get('/request')
+    @HttpCode(201)
     public async requestResetPassword(
         @Query() query: GetRequestDto,
     ) {
-        return await this.requestResetPasswordService.handle(
+        await this.requestResetPasswordService.handle(
             query.email,
         );
+
+        return {
+            message: 'Reset password request has been sent',
+        };
     }
 
     @Post('/mutation')
+    @HttpCode(200)
     public async mutationResetPassword(
         @Body() postMutationDto: PostMutationDto,
     ) {
-        return await this.mutationResetPasswordService.handle(postMutationDto);
+        await this.mutationResetPasswordService.handle(postMutationDto);
+
+        return {
+            message: 'Password has been reset successfully',
+        };
     }
 }
