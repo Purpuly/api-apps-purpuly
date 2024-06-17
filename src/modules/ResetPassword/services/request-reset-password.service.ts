@@ -89,7 +89,5 @@ export default class RequestResetPasswordService {
             user_id,
             resetPasswordToken,
         );
-
-        return;
     }
 }
