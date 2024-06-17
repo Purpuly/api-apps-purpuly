@@ -41,8 +41,6 @@ export default class MutationResetPasswordService {
         await this.updatePassword(applicationId, userId, newPassword);
 
         await this.invalidateResetPasswordToken(applicationId, recordId, resetPasswordToken);
-
-        return;
     }
 
     private async checkIfResetPasswordTokenIsValid(

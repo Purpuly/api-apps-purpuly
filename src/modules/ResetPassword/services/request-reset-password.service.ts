@@ -4,6 +4,7 @@ import UserRepository from "@core/repositories/Authentication/User.repository";
 import errorCodes from "@shared/errors/error-codes";
 import RandomString from "@shared/utils/RandomString.utils";
 import ResetPasswordRepository from "@core/repositories/Authentication/ResetPassword.repository";
+import MailRepository from "@shared/repositories/Mail/Mail.repository";
 
 const RESET_PASSWORD_TOKEN_LENGTH: number = 64;
 
@@ -13,6 +14,7 @@ export default class RequestResetPasswordService {
 
     constructor(
         @Inject(REQUEST) private readonly request: Request,
+        private readonly mailRepository: MailRepository,
         private readonly userRepository: UserRepository,
         private readonly resetPasswordRepository: ResetPasswordRepository,
     ) {
@@ -43,6 +45,15 @@ export default class RequestResetPasswordService {
         await this.saveResetPasswordTokenInDatabase(
             app_id,
             userId,
+            resetPasswordToken,
+        );
+
+        await this.mailRepository.sendResetPasswordMail(
+            {
+                name: user_email,
+                email: user_email,
+            },
+            app_id,
             resetPasswordToken,
         );
     }
