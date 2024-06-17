@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 import InitUtils from '@shared/utils/init/init.utils';
 
 async function bootstrap() {
@@ -12,7 +13,7 @@ async function bootstrap() {
   // Register plugins and extensions
   app.enableCors({ origin: config.allowOrigin });
 
-  // app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe());
   // app.use(helmet());
 
   // Start the application
