@@ -26,13 +26,15 @@ export default class RequestResetPasswordService {
     ): Promise<any> {
         const app_id = this.applicationId;
 
-        const userId: string | null = await this.userRepository.getUserIdFromUserEmail(user_email);
+        const userId: string | null =
+            await this.userRepository.getUserIdFromUserEmail(user_email);
 
         if (userId === null) {
             throw new HttpException(errorCodes.resetPassword.request.userNotFound, 404);
         }
 
-        const userRecord = await this.userRepository.getUserRecordFromUserId(userId);
+        const userRecord =
+            await this.userRepository.getUserRecordFromUserId(userId);
 
         if (userRecord === null) {
             throw new HttpException(errorCodes.resetPassword.request.userNotFound, 404);

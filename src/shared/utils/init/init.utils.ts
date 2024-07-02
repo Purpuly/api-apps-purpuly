@@ -55,6 +55,6 @@ export default class InitUtils {
     }
 
     public static log(message: string): void {
-        console.log(`[vendor_api] ${message}`);
+        console.log(`[API] ${message}`);
     }
 }
