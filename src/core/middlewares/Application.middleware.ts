@@ -1,11 +1,12 @@
 import ApplicationRepository from '@core/repositories/Application/Application.repository';
-import { HttpException, Injectable, NestMiddleware } from '@nestjs/common';
+import { HttpException, Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import ApplicationAdapter from '@shared/modules/app/application.adapter';
 import { Request, NextFunction } from 'express';
 
-const BYPASS_APPLICATION_CHECK_MIDDLEWARE: boolean = true;
+const BYPASS_APPLICATION_CHECK_MIDDLEWARE: boolean = false;
 
 @Injectable()
-export default class ApplicationIdMiddleware implements NestMiddleware {
+export default class ApplicationMiddleware implements NestMiddleware {
     constructor(
         private readonly applicationRepository: ApplicationRepository,
     ) { }
@@ -26,17 +27,20 @@ export default class ApplicationIdMiddleware implements NestMiddleware {
 
             if (!application) throw 'No application found with the provided application identifier.';
 
-            console.log('application resolved, middleware passed', application);
-
             req['applicationId'] = applicationId;
+
+            const publicApplication =
+                ApplicationAdapter.fromApplicationToPublicApplication(application);
+
+            req['publicApplication'] = publicApplication;
 
             next();
         } catch (error) {
-            console.error('ApplicationIdMiddleware error:', error);
+            // Logger.warn(`ApplicationIdMiddleware error: ${error}`);
 
             throw new HttpException(
                 error.message || 'An error occurred while processing the request.',
-                400,
+                404,
             );
         }
     }

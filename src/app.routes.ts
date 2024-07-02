@@ -1,5 +1,6 @@
 import { Routes } from "@nestjs/core";
 import ResetPasswordModule from "./modules/ResetPassword/reset-password.module";
+import ApplicationModule from "@shared/modules/app/application.module";
 
 const routes: Routes = [
     {
@@ -7,6 +8,7 @@ const routes: Routes = [
         children: [
             {
                 path: ":applicationId",
+                module: ApplicationModule,
                 children: [
                     {
                         path: "reset-password",
