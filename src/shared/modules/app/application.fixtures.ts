@@ -8,7 +8,7 @@ const applications: Application[] = [
         image_url: "https://example.com/logo.png",
         url: "https://example.com",
         created_at: new Date(),
-        isActive: true,
+        is_active: true,
         status: "approved",
     },
 ];

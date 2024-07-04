@@ -11,7 +11,7 @@ export default class ApplicationAdapter {
             description: application.description,
             baseUrl: application.url,
             logoUrl: application.image_url,
-            isActive: application.isActive,
+            isActive: application.is_active,
         };
     }
 };
