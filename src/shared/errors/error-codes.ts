@@ -15,6 +15,9 @@ const errorCodes = {
             failedToUpdate: 'mutation/failed-to-update',
             failedToInvalidate: 'mutation/failed-to-invalidate',
             invalidTokenMatchOnInvalidation: 'mutation/invalid-token-match-on-invalidation',
+            recordNotFound: 'mutation/record-not-found',
+            expiredToken: 'mutation/expired-token',
+            applicationIdMismatch: 'mutation/application-id-mismatch',
         },
     },
 };
