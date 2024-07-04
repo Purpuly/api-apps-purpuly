@@ -20,7 +20,7 @@ model Application {
   url         String
   image_url   String
   created_at  DateTime @default(now())
-  isActive    Boolean  @default(false)
+  is_active   Boolean  @default(false)
   status      Status   @default(pending)
 }
 
@@ -28,4 +28,12 @@ enum Status {
   pending
   approved
   rejected
+}
+
+model ResetPassword {
+  id      String @id @default(cuid())
+  app_id  String
+  user_id String
+  token   String
+  iat     Int
 }
