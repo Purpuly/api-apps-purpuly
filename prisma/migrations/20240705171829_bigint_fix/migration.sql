@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "ResetPassword" ALTER COLUMN "iat" SET DATA TYPE BIGINT;

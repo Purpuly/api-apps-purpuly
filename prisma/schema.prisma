@@ -35,5 +35,5 @@ model ResetPassword {
   app_id  String
   user_id String
   token   String
-  iat     Int
+  iat     BigInt
 }
