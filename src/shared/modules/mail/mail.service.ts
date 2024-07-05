@@ -1,3 +1,4 @@
+import { ConfigService } from "@nestjs/config";
 import axios, { type AxiosInstance } from "axios";
 import Core from "@core/services/core.service";
 import { Injectable, Logger } from "@nestjs/common";
@@ -8,14 +9,17 @@ import type TransactionalMailPayload from "@shared/repositories/Mail/transaction
 @Injectable()
 export default class MailService extends Core implements MailRepository {
     private readonly mailHttpClient: AxiosInstance;
-    private readonly MJ_APIKEY_PUBLIC: string;
-    private readonly MJ_APIKEY_PRIVATE: string;
 
-    constructor() {
+    private readonly MJ_APIKEY_PUBLIC: string =
+        this.configService.getOrThrow<string>('MJ_APIKEY_PUBLIC');
+
+    private readonly MJ_APIKEY_PRIVATE: string =
+        this.configService.getOrThrow<string>('MJ_APIKEY_PRIVATE');
+
+    constructor(
+        private readonly configService: ConfigService,
+    ) {
         super();
-
-        this.MJ_APIKEY_PUBLIC = process.env.MJ_APIKEY_PUBLIC || '';
-        this.MJ_APIKEY_PRIVATE = process.env.MJ_APIKEY_PRIVATE || '';
 
         this.mailHttpClient = axios.create({
             url: 'https://api.mailjet.com/v3/send',
