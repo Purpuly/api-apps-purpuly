@@ -4,7 +4,8 @@ export default abstract class MailRepository {
     abstract sendResetPasswordMail(
         to: { name: string, email: string },
         app_id: string,
-        resetPasswordToken: string
+        resetPasswordToken: string,
+        recordId: string,
     ): Promise<void>;
     abstract sendTransactionalMail(data: TransactionalMailPayload): Promise<void>;
 }

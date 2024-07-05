@@ -17,13 +17,13 @@ export default class ResetPasswordAdapters {
     }
 
     private static checkIfIsExpired(
-        timestamp: number,
+        timestamp: bigint,
         expirationTimeInMinutes: number = DEFAULT_RESET_PASSWORD_EXPIRATION_TIME_IN_MINUTES
     ): boolean {
         const now = Date.now();
 
         const expirationTimeInMilliseconds = expirationTimeInMinutes * 60 * 1000;
 
-        return Number(now) >= Number(timestamp + expirationTimeInMilliseconds);
+        return Number(now) >= Number(timestamp) + expirationTimeInMilliseconds;
     }
 }

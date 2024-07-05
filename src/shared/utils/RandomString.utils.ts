@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 
-const DEFAULT_STRING_LENGTH: number = 64;
+const DEFAULT_STRING_LENGTH: number = 32;
 
 export default class RandomString {
     public static generate(
