@@ -1,3 +1,4 @@
+import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -12,9 +13,8 @@ async function bootstrap() {
 
   // Register plugins and extensions
   app.enableCors({ origin: config.allowOrigin });
-
   app.useGlobalPipes(new ValidationPipe());
-  // app.use(helmet());
+  app.use(helmet());
 
   // Start the application
   await app.listen(config.listeningPort);
