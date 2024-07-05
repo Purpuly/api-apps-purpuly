@@ -5,6 +5,8 @@ import { ValidationPipe } from '@nestjs/common';
 import InitUtils from '@shared/utils/init/init.utils';
 
 async function bootstrap() {
+  InitUtils.checkRequiredConfiguration();
+
   const config = new InitUtils().getApplicationInitConfig();
 
   const app = await NestFactory.create(AppModule, {

@@ -1,5 +1,7 @@
 const REQUIRED_CONFIGURATION = [
-  'DATABASE_URL',
+  'DATABASE_URL', // Database URL (Postgres)
+  'MJ_APIKEY_PUBLIC', // Mailjet API Key Public
+  'MJ_APIKEY_PRIVATE', // Mailjet API Key Private
 ];
 
 const PURPULY_ONLY_ENDPOINTS_REGEX =
