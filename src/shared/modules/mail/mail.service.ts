@@ -16,13 +16,14 @@ export default class MailService extends Core implements MailRepository {
     private readonly MJ_APIKEY_PRIVATE: string =
         this.configService.getOrThrow<string>('MJ_APIKEY_PRIVATE');
 
+    private readonly MJ_API_BASE_URL: string = 'https://api.mailjet.com/v3/send';
+
     constructor(
         private readonly configService: ConfigService,
     ) {
         super();
 
         this.mailHttpClient = axios.create({
-            url: 'https://api.mailjet.com/v3/send',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -36,11 +37,12 @@ export default class MailService extends Core implements MailRepository {
     public async sendResetPasswordMail(
         to: { name: string; email: string; },
         app_id: string,
-        resetPasswordToken: string
+        resetPasswordToken: string,
+        recordId: string = ''
     ): Promise<void> {
         const from = MailService.getMailFrom();
         const templateId = MailService.resolveTemplateId('reset-password');
-        const resetLink = MailService.getResetPasswordLink(app_id, resetPasswordToken);
+        const resetLink = MailService.getResetPasswordLink(app_id, resetPasswordToken, recordId);
 
         await this.sendTransactionalMail({
             to: [
@@ -62,7 +64,7 @@ export default class MailService extends Core implements MailRepository {
 
     public async sendTransactionalMail(data: TransactionalMailPayload): Promise<void> {
         console.log('MailService: Sending mail with data: ', data);
-        await this.mailHttpClient.post('', data);
+        await this.mailHttpClient.post(this.MJ_API_BASE_URL, data);
     }
 
     private static resolveTemplateId(template: string): string {

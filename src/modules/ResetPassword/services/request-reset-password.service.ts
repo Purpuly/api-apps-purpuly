@@ -6,7 +6,7 @@ import RandomString from "@shared/utils/RandomString.utils";
 import ResetPasswordRepository from "@core/repositories/Authentication/ResetPassword.repository";
 import MailRepository from "@shared/repositories/Mail/Mail.repository";
 
-const RESET_PASSWORD_TOKEN_LENGTH: number = 64;
+const RESET_PASSWORD_TOKEN_LENGTH: number = 32;
 
 @Injectable()
 export default class RequestResetPasswordService {
@@ -44,7 +44,7 @@ export default class RequestResetPasswordService {
 
         const resetPasswordToken: string = this.generateResetPasswordToken();
 
-        await this.saveResetPasswordTokenInDatabase(
+        const tokenRecordId: string = await this.saveResetPasswordTokenInDatabase(
             app_id,
             userId,
             resetPasswordToken,
@@ -57,6 +57,7 @@ export default class RequestResetPasswordService {
             },
             app_id,
             resetPasswordToken,
+            tokenRecordId,
         );
     }
 
@@ -69,7 +70,7 @@ export default class RequestResetPasswordService {
             throw new HttpException(errorCodes.user.notVerifiedEmail, 400);
         }
 
-        if (userAccountStatus.accountIsEnabled) {
+        if (!userAccountStatus.accountIsEnabled) {
             throw new HttpException(errorCodes.user.notActive, 400);
         }
 
@@ -91,16 +92,18 @@ export default class RequestResetPasswordService {
         app_id: string,
         user_id: string,
         resetPasswordToken: string,
-    ): Promise<void> {
+    ): Promise<string> {
         if (!app_id || !user_id || !resetPasswordToken) {
             Logger.error('Missing parameters on saving reset password token in database operation ! Check the parameters passed to the function.');
             throw new HttpException('INTERNAL_SERVER_ERROR', 500);
         }
 
-        await this.resetPasswordRepository.saveResetPasswordTokenForApp(
+        const tokenRecordId: string = await this.resetPasswordRepository.saveResetPasswordTokenForApp(
             app_id,
             user_id,
             resetPasswordToken,
         );
+
+        return tokenRecordId;
     }
 }
