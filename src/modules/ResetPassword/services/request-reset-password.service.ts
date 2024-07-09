@@ -67,9 +67,9 @@ export default class RequestResetPasswordService {
     ): Promise<void> {
         const userAccountStatus = await this.userRepository.getUserAccountStatus(user_id);
 
-        if (!userAccountStatus.accountEmailIsVerified) {
-            throw new HttpException(errorCodes.user.notVerifiedEmail, 400);
-        }
+        // if (!userAccountStatus.accountEmailIsVerified) {
+        //     throw new HttpException(errorCodes.user.notVerifiedEmail, 400);
+        // }
 
         if (!userAccountStatus.accountIsEnabled) {
             throw new HttpException(errorCodes.user.notActive, 400);
