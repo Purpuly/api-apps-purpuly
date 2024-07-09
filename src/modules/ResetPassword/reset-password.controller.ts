@@ -3,9 +3,7 @@ import RequestResetPasswordService from "./services/request-reset-password.servi
 import MutationResetPasswordService from "./services/mutation-reset-password.service";
 import GetRequestDto from "./dto/post-request.dto";
 import PostMutationDto from "./dto/post-mutation.dto";
-
-// GET /api/:applicationId/reset-password/request { email }
-// POST /api/:applicationId/reset-password/mutation { recordId, resetPasswordToken, newPassword }
+import successCodes from "@shared/success/success-codes";
 
 @Controller()
 export default class ResetPasswordController {
@@ -24,7 +22,7 @@ export default class ResetPasswordController {
         );
 
         return {
-            message: 'Reset password request has been sent',
+            code: successCodes.resetPassword.request,
         };
     }
 
@@ -36,7 +34,7 @@ export default class ResetPasswordController {
         await this.mutationResetPasswordService.handle(postMutationDto);
 
         return {
-            message: 'Password has been reset successfully',
+            code: successCodes.resetPassword.mutation,
         };
     }
 }
