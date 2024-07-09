@@ -1,18 +1,19 @@
 type BaseMailSenderPayload = {
-    from: {
-        name: string;
-        email: string;
+    From: {
+        Name: string;
+        Email: string;
     };
-    to: {
-        name: string;
-        email: string;
+    To: {
+        Name: string;
+        Email: string;
     }[];
-    subject: string;
+    Subject: string;
 };
 
 type TransactionalMailPayload = BaseMailSenderPayload & {
-    templateId: string;
-    variables: any;
+    TemplateID: number;
+    Variables: any;
+    TemplateLanguage: boolean;
 };
 
 export default TransactionalMailPayload;
