@@ -1,7 +1,7 @@
 import type { ResetPassword } from "@prisma/client";
 import type ResetPasswordRecord from "@shared/interfaces/reset-password-record.type";
 
-const DEFAULT_RESET_PASSWORD_EXPIRATION_TIME_IN_MINUTES: number = 15;
+const DEFAULT_RESET_PASSWORD_EXPIRATION_TIME_IN_MINUTES: number = 15; // 15 minutes
 
 export default class ResetPasswordAdapters {
     public static fromResetPasswordToResetPasswordRecord(
