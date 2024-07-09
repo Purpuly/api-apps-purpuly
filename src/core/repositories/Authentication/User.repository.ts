@@ -5,4 +5,5 @@ export default abstract class UserRepository {
     abstract getUserIdFromUserEmail(email: string): Promise<string | null>;
     abstract getUserRecordFromUserId(user_id: string): Promise<UserRecord | null>;
     abstract getUserAccountStatus(user_id: string): Promise<UserAccountStatus>;
+    abstract validateVerifiedEmailStatus(user_id: string): Promise<void>;
 }
