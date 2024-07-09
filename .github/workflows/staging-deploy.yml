@@ -1,0 +1,59 @@
+name: (staging) Build & Deploy Apps Purpuly API on a GCP Cloud Run service
+on:
+  push:
+    branches:
+      - staging
+
+env:
+  GCP_MAX_INSTANCES: 1
+  GCP_SERVICE_NAME: staging-api-apps-purpuly
+  GCP_ARTIFACT_REPOSITORY_NAME: staging-api-apps-purpuly-repository
+  GCP_ARTIFACT_REPOSITORY_URL: europe-west1-docker.pkg.dev
+  GCP_CLOUD_RUN_REGION: europe-west1
+
+jobs:
+  build-image-and-deploy:
+    name: Build image and deploy to Cloud Run
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      - name: "Action Checkout"
+        uses: "actions/checkout@v4"
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+
+      - name: "Build Dockerfile"
+        run: "docker build -t $GCP_ARTIFACT_REPOSITORY_URL/${{ secrets.GCP_PROJECT_ID }}/$GCP_ARTIFACT_REPOSITORY_NAME/$GCP_SERVICE_NAME:$GITHUB_SHA ."
+
+      - name: "Configure Docker for GCP Artifact Registry"
+        run: "gcloud auth configure-docker $GCP_ARTIFACT_REPOSITORY_URL"
+
+      - name: "Authenticate with GCP Artifact Registry"
+        run: "gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://$GCP_ARTIFACT_REPOSITORY_URL"
+
+      - name: "Push Docker image to GCP Artifact Registry"
+        run: "docker push $GCP_ARTIFACT_REPOSITORY_URL/${{ secrets.GCP_PROJECT_ID }}/$GCP_ARTIFACT_REPOSITORY_NAME/$GCP_SERVICE_NAME:$GITHUB_SHA"
+
+      - id: "deploy"
+        uses: "google-github-actions/deploy-cloudrun@v2"
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          region: "${{ env.GCP_CLOUD_RUN_REGION }}"
+          service: "${{ env.GCP_SERVICE_NAME }}"
+          timeout: "15m"
+          image: "${{ env.GCP_ARTIFACT_REPOSITORY_URL }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPOSITORY_NAME }}/${{ env.GCP_SERVICE_NAME }}:${{ github.sha }}"
+          env_vars: |
+            NODE_ENV=production
+          secrets: |
+            MJ_APIKEY_PUBLIC=PRODUCTION_MJ_APIKEY_PUBLIC:latest
+            MJ_APIKEY_PRIVATE=PRODUCTION_MJ_APIKEY_PRIVATE:latest
+            /app/credentials/gcp_credentials.json=STAGING_FIREBASE_SERVICE_ACCOUNT_KEY:latest
