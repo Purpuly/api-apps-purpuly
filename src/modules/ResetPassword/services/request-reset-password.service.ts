@@ -5,12 +5,13 @@ import errorCodes from "@shared/errors/error-codes";
 import RandomString from "@shared/utils/RandomString.utils";
 import ResetPasswordRepository from "@core/repositories/Authentication/ResetPassword.repository";
 import MailRepository from "@shared/repositories/Mail/Mail.repository";
+import PublicApplication from "@shared/interfaces/public-application.type";
 
 const RESET_PASSWORD_TOKEN_LENGTH: number = 32;
 
 @Injectable()
 export default class RequestResetPasswordService {
-    private readonly applicationId: string;
+    private readonly publicApplication: PublicApplication;
 
     constructor(
         @Inject(REQUEST) private readonly request: Request,
@@ -18,13 +19,13 @@ export default class RequestResetPasswordService {
         private readonly userRepository: UserRepository,
         private readonly resetPasswordRepository: ResetPasswordRepository,
     ) {
-        this.applicationId = this.request['applicationId'];
+        this.publicApplication = this.request['publicApplication'];
     }
 
     public async handle(
         user_email: string,
     ): Promise<any> {
-        const app_id = this.applicationId;
+        const publicApplication = this.publicApplication;
 
         const userId: string | null =
             await this.userRepository.getUserIdFromUserEmail(user_email);
@@ -45,7 +46,7 @@ export default class RequestResetPasswordService {
         const resetPasswordToken: string = this.generateResetPasswordToken();
 
         const tokenRecordId: string = await this.saveResetPasswordTokenInDatabase(
-            app_id,
+            publicApplication.appId,
             userId,
             resetPasswordToken,
         );
@@ -55,9 +56,9 @@ export default class RequestResetPasswordService {
                 name: user_email,
                 email: user_email,
             },
-            app_id,
             resetPasswordToken,
             tokenRecordId,
+            publicApplication,
         );
     }
 

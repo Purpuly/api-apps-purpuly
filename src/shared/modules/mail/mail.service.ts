@@ -5,6 +5,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import type MailRepository from "@shared/repositories/Mail/Mail.repository";
 import templatesMap from "@shared/repositories/Mail/constants/template-map.const";
 import type TransactionalMailPayload from "@shared/repositories/Mail/transactional-mail.type";
+import PublicApplication from "@shared/interfaces/public-application.type";
 
 @Injectable()
 export default class MailService extends Core implements MailRepository {
@@ -16,7 +17,7 @@ export default class MailService extends Core implements MailRepository {
     private readonly MJ_APIKEY_PRIVATE: string =
         this.configService.getOrThrow<string>('MJ_APIKEY_PRIVATE');
 
-    private readonly MJ_API_BASE_URL: string = 'https://api.mailjet.com/v3/send';
+    private readonly MJ_API_BASE_URL: string = 'https://api.mailjet.com/v3.1/send';
 
     constructor(
         private readonly configService: ConfigService,
@@ -36,38 +37,44 @@ export default class MailService extends Core implements MailRepository {
 
     public async sendResetPasswordMail(
         to: { name: string; email: string; },
-        app_id: string,
         resetPasswordToken: string,
-        recordId: string = ''
+        recordId: string = '',
+        public_application: PublicApplication,
     ): Promise<void> {
-        const from = MailService.getMailFrom();
-        const templateId = MailService.resolveTemplateId('reset-password');
-        const resetLink = MailService.getResetPasswordLink(app_id, resetPasswordToken, recordId);
+        const { appId, name } = public_application;
+
+        const From = MailService.getMailFrom();
+        const TemplateID = MailService.resolveTemplateId('reset-password');
+        const resetLink = MailService.getResetPasswordLink(
+            appId, resetPasswordToken, recordId
+        );
 
         await this.sendTransactionalMail({
-            to: [
+            From,
+            To: [
                 {
-                    name: to.name,
-                    email: to.email,
+                    Name: to.name,
+                    Email: to.email,
                 },
             ],
-            from,
-            templateId,
-            variables: {
-                application_name: 'Purpuly App',
+            TemplateID,
+            TemplateLanguage: true,
+            Variables: {
+                applicationName: `${name}`,
                 email: to.email,
                 link: resetLink,
             },
-            subject: 'Réinitialisation du mot de passe',
+            Subject: `Changer de mot de passe sur ${name}`,
         });
     }
 
-    public async sendTransactionalMail(data: TransactionalMailPayload): Promise<void> {
-        console.log('MailService: Sending mail with data: ', data);
-        await this.mailHttpClient.post(this.MJ_API_BASE_URL, data);
+    public async sendTransactionalMail(
+        data: TransactionalMailPayload
+    ): Promise<void> {
+        await this.mailHttpClient.post(this.MJ_API_BASE_URL, { Messages: [data] });
     }
 
-    private static resolveTemplateId(template: string): string {
+    private static resolveTemplateId(template: string): number {
         const id = templatesMap[template];
 
         if (!id) {
@@ -78,10 +85,10 @@ export default class MailService extends Core implements MailRepository {
         return id;
     };
 
-    private static getMailFrom(): TransactionalMailPayload['from'] {
+    private static getMailFrom(): TransactionalMailPayload['From'] {
         return {
-            email: 'no-reply@purpuly.com',
-            name: 'Purpuly',
+            Email: 'no-reply@apps.purpuly.com',
+            Name: 'Purpuly Apps',
         };
     }
 
@@ -95,7 +102,7 @@ export default class MailService extends Core implements MailRepository {
 
         const url = isProductionEnv
             ? `https://apps.purpuly.com/app/${app_id}/reset-password?token=${resetPasswordToken}&record_id=${recordId}` :
-            `http://localhost:3000/app/${app_id}/reset-password?token=${resetPasswordToken}&record_id=${recordId}`;
+            `http://localhost:5173/app/${app_id}/reset-password?token=${resetPasswordToken}&record_id=${recordId}`;
 
         return url;
     }
