@@ -39,4 +39,12 @@ export default class UserRepositoryImplementation implements UserRepository {
 
         return userAccountStatus;
     }
+
+    public async validateVerifiedEmailStatus(user_id: string): Promise<void> {
+        const user = await this.firebaseService.auth.getUser(user_id);
+
+        if (!user) return;
+
+        return;
+    }
 }
