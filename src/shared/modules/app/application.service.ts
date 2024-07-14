@@ -1,4 +1,4 @@
-// import applications from "./application.fixtures";
+import applications from "./application.fixtures";
 import ApplicationRepository from "@core/repositories/Application/Application.repository";
 import { Inject, Injectable } from "@nestjs/common";
 import { Application } from "@prisma/client";
@@ -14,7 +14,8 @@ export default class ApplicationService implements ApplicationRepository {
     ) { }
 
     public async getApplicationFromAppId(app_id: string): Promise<Application | null> {
-        // TEST ONLY : return applications.find(app => app.id === app_id) || null;
+        // TEST ONLY :
+        return applications.find(app => app.id === app_id) || null;
 
         return await this.databaseService.application.findFirst({
             where: {

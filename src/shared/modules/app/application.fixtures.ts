@@ -10,6 +10,7 @@ const applications: Application[] = [
         created_at: new Date(),
         is_active: true,
         status: "approved",
+        security_id: "security_test_id",
     },
 ];
 
