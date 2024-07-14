@@ -1,6 +1,6 @@
 import ApplicationRepository from '@core/repositories/Application/Application.repository';
 import { HttpException, Injectable, NestMiddleware } from '@nestjs/common';
-import ApplicationAdapter from '@shared/modules/app/application.adapter';
+import ApplicationAdapter from '@shared/adapters/Application.adapter';
 import { Request, NextFunction } from 'express';
 
 @Injectable()
