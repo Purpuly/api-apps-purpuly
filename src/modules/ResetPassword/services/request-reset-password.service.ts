@@ -24,7 +24,7 @@ export default class RequestResetPasswordService {
 
     public async handle(
         user_email: string,
-    ): Promise<any> {
+    ): Promise<void> {
         const publicApplication = this.publicApplication;
 
         const userId: string | null =
