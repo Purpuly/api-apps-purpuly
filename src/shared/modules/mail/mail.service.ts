@@ -101,8 +101,8 @@ export default class MailService extends Core implements MailRepository {
         const isProductionEnv: boolean = Core.isProductionEnv;
 
         const url = isProductionEnv
-            ? `https://apps.purpuly.com/app/${app_id}/reset-password?token=${resetPasswordToken}&record_id=${recordId}` :
-            `http://localhost:5173/app/${app_id}/reset-password?token=${resetPasswordToken}&record_id=${recordId}`;
+            ? `https://apps.purpuly.com/a/${app_id}/reset-password?token=${resetPasswordToken}&record_id=${recordId}` :
+            `http://localhost:5173/a/${app_id}/reset-password?token=${resetPasswordToken}&record_id=${recordId}`;
 
         return url;
     }
