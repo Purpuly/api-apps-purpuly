@@ -6,7 +6,7 @@ import {
 import { ApplicationInitBaseConfig } from './init.interface';
 
 export default class InitUtils {
-    public readonly isProductionEnv: boolean =
+    public static readonly isProductionEnv: boolean =
         process.env.NODE_ENV === 'production';
 
     public static checkRequiredConfiguration(): void {
@@ -27,7 +27,7 @@ export default class InitUtils {
             );
         }
 
-        InitUtils.log('Required configuration is initialized.');
+        InitUtils.log('All required configuration was found. Launching the application...');
     }
 
     private static getCorsAllowOrigin(): string {
@@ -45,9 +45,9 @@ export default class InitUtils {
         return String(APPLICATION_LISTENING_PORT);
     }
 
-    public getApplicationInitConfig(): ApplicationInitBaseConfig {
+    public static getApplicationInitConfig(): ApplicationInitBaseConfig {
         return {
-            isProductionEnv: this.isProductionEnv,
+            isProductionEnv: InitUtils.isProductionEnv,
             listeningPort: InitUtils.getListeningPort(),
             allowOrigin: InitUtils.getCorsAllowOrigin(),
             rawBody: true,

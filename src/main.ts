@@ -7,7 +7,7 @@ import InitUtils from '@shared/utils/init/init.utils';
 async function bootstrap() {
   InitUtils.checkRequiredConfiguration();
 
-  const config = new InitUtils().getApplicationInitConfig();
+  const config = InitUtils.getApplicationInitConfig();
 
   const app = await NestFactory.create(AppModule, {
     rawBody: config.rawBody,

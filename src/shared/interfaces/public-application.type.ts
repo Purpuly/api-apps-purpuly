@@ -5,6 +5,7 @@ type PublicApplication = {
     baseUrl: string;
     logoUrl: string;
     isActive: boolean;
+    webhookFeatureIsEnabled: boolean;
 };
 
 export default PublicApplication;

@@ -10,7 +10,9 @@ const applications: Application[] = [
         created_at: new Date(),
         is_active: true,
         status: "approved",
-        security_id: "security_test_id",
+        security_webhook_is_enabled: true,
+        security_webhook_secret: "secret",
+        security_webhook_url: "http://localhost:3000",
     },
 ];
 

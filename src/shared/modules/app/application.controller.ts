@@ -1,6 +1,6 @@
 import { Controller, Get } from "@nestjs/common";
 import PublicApplication from "@shared/interfaces/public-application.type";
-import ApplicationRepository from "@core/repositories/Application/Application.repository";
+import ApplicationRepository from "@shared/repositories/Application/Application.repository";
 
 @Controller()
 export default class ApplicationController {
