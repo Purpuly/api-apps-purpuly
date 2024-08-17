@@ -14,26 +14,17 @@ datasource db {
 }
 
 model Application {
-  id          String               @id @default(cuid())
-  name        String
-  description String
-  url         String
-  image_url   String
-  created_at  DateTime             @default(now())
-  is_active   Boolean              @default(false)
-  status      Status               @default(pending)
-  security    ApplicationSecurity? @relation(fields: [security_id], references: [id])
-  security_id String?
-}
-
-model ApplicationSecurity {
-  id                 String        @id @default(cuid())
-  app_id             String        @unique
-  public_key         String
-  private_key        String
-  webhook_is_enabled Boolean
-  webhook_url        String
-  Application        Application[]
+  id                          String   @id @default(cuid())
+  name                        String
+  description                 String
+  url                         String
+  image_url                   String
+  created_at                  DateTime @default(now())
+  is_active                   Boolean  @default(false)
+  status                      Status   @default(pending)
+  security_webhook_is_enabled Boolean
+  security_webhook_url        String
+  security_webhook_secret     String
 }
 
 enum Status {
