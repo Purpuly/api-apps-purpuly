@@ -10,9 +10,11 @@ import ResetPasswordRepository from "@core/repositories/Authentication/ResetPass
 import UserRepositoryImplementation from "@core/implementations/user-repository.implementation";
 import PasswordRepositoryImplementation from "@core/implementations/password-repository.implementation";
 import ResetPasswordRepositoryImplementation from "@core/implementations/reset-password-repository.implementation";
+import WebhookPasswordService from "./services/webhook-password.service";
 
 @Module({
     providers: [
+        WebhookPasswordService,
         {
             provide: MailRepository,
             useClass: MailService,
