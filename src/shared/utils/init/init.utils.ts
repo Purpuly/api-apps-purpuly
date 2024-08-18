@@ -3,7 +3,7 @@ import {
     PURPULY_ONLY_ENDPOINTS_REGEX,
     REQUIRED_CONFIGURATION,
 } from './init.config';
-import { ApplicationInitBaseConfig } from './init.interface';
+import type ApplicationInitBaseConfig from './init.interface';
 
 export default class InitUtils {
     public static readonly isProductionEnv: boolean =

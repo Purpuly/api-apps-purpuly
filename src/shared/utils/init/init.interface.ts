@@ -1,4 +1,4 @@
-export interface ApplicationInitBaseConfig {
+export default interface ApplicationInitBaseConfig {
   isProductionEnv: boolean;
   listeningPort: string;
   allowOrigin: string;
