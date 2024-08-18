@@ -8,7 +8,7 @@ const WEBHOOK_EGRESS_UA: string = "purpuly-webhook-egress/1.0";
 const baseWebhookEgressInstance: AxiosInstance = axios.create({
     headers: {
         "Content-Type": "application/json",
-        "X-Powered-By": "Purpuly Apps",
+        "X-Powered-By": "Purpuly Services",
         "User-Agent": WEBHOOK_EGRESS_UA,
     },
 });
