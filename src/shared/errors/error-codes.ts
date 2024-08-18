@@ -18,6 +18,7 @@ const errorCodes = {
             recordNotFound: 'mutation/record-not-found',
             expiredToken: 'mutation/expired-token',
             applicationIdMismatch: 'mutation/application-id-mismatch',
+            failedToTriggerWebhook: 'mutation/failed-to-trigger-webhook',
         },
     },
 };
