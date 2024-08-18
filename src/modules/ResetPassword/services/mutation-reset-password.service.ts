@@ -5,6 +5,11 @@ import ResetPasswordRepository from "@core/repositories/Authentication/ResetPass
 import PasswordRepository from "@core/repositories/Authentication/Password.repository";
 import errorCodes from "@shared/errors/error-codes";
 import ResetPasswordRecord from "@shared/interfaces/reset-password-record.type";
+import ApplicationRepository from "@shared/repositories/Application/Application.repository";
+import ApplicationWebhookPrivate from "@shared/interfaces/application-webhook-private.type";
+import ApplicationAdapter from "@shared/adapters/Application.adapter";
+import WebhookPasswordService from "./webhook-password.service";
+import UserPasswordUpdatePayload from "@shared/interfaces/user-password-update-payload.type";
 
 @Injectable()
 export default class MutationResetPasswordService {
@@ -14,6 +19,8 @@ export default class MutationResetPasswordService {
         @Inject(REQUEST) private readonly request: Request,
         private readonly passwordRepository: PasswordRepository,
         private readonly resetPasswordRepository: ResetPasswordRepository,
+        private readonly applicationRepository: ApplicationRepository,
+        private readonly webhookPasswordService: WebhookPasswordService,
     ) {
         this.applicationId = this.request['applicationId'];
     }
@@ -99,6 +106,47 @@ export default class MutationResetPasswordService {
             userId,
             newPassword,
         );
+
+        await this.useWebhookPasswordService(
+            applicationId,
+            userId,
+            newPassword,
+        );
+
+        return;
+    }
+
+    private async useWebhookPasswordService(
+        applicationId: string,
+        userId: string,
+        newPassword: string
+    ): Promise<void> {
+        const applicationWebhookPrivate: ApplicationWebhookPrivate = await this.getApplicationWebhookPrivate(
+            applicationId,
+        );
+
+        if (!applicationWebhookPrivate.security_webhook_is_enabled) {
+            // No need to trigger the webhook, feature is disabled
+            return;
+        }
+
+        // Prepare payload
+        const payload: UserPasswordUpdatePayload = this.webhookPasswordService.preparePayload(
+            userId,
+            newPassword,
+            applicationWebhookPrivate.security_webhook_secret,
+        );
+
+        try {
+            // Trigger webhook
+            await this.webhookPasswordService.triggerPasswordUpdateWebhook(
+                applicationWebhookPrivate.security_webhook_url,
+                applicationWebhookPrivate.security_webhook_secret,
+                payload,
+            );
+        } catch {
+            throw new HttpException(errorCodes.resetPassword.mutation.failedToTriggerWebhook, 500);
+        }
     }
 
     private async invalidateResetPasswordToken(
@@ -118,5 +166,16 @@ export default class MutationResetPasswordService {
         }
 
         return;
+    }
+
+    private async getApplicationWebhookPrivate(
+        applicationId: string,
+    ): Promise<ApplicationWebhookPrivate> {
+        const application = await this.applicationRepository.getApplicationFromAppId(
+            applicationId,
+        );
+
+        // We can safely assume that the application exists because we have already checked for it in the middleware
+        return ApplicationAdapter.fromApplicationToApplicationWebhookPrivate(application);
     }
 }
