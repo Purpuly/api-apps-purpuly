@@ -11,8 +11,8 @@ const applications: Application[] = [
         is_active: true,
         status: "approved",
         security_webhook_is_enabled: true,
-        security_webhook_secret: "secret",
-        security_webhook_url: "http://localhost:3000",
+        security_webhook_secret: "e9hHLvNCKuLFmBDll34xGaLLEqjk+BIV",
+        security_webhook_url: "http://localhost:8080/api/test_id/reset-password/test",
     },
 ];
 
