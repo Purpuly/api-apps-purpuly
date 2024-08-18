@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import WebhookPasswordServiceRepository from "@core/repositories/Webhook/WebhookPassword.repository";
 import UserPasswordUpdatePayload from "@shared/interfaces/user-password-update-payload.type";
 import AESEncryptionUtils from "@shared/utils/AESEncryption.utils";
@@ -19,10 +19,19 @@ export default class WebhookPasswordService implements WebhookPasswordServiceRep
         password: string,
         secret: string,
     ): UserPasswordUpdatePayload {
-        const encrypted_password: string = AESEncryptionUtils.encrypt(password, secret);
-        return {
-            user_id,
-            password: encrypted_password,
-        };
-    }
-};
+        try {
+            const encrypted_password: string = AESEncryptionUtils.encrypt(password, secret);
+
+            return {
+                user_id,
+                password: encrypted_password,
+            };
+        } catch (error) {
+            console.error("Error preparing payload", error);
+            throw new HttpException(
+                "Unexpected error appeared in the process of preparing the communication with application services. We aborted the operation to prevent data corruption.",
+                500,
+            );
+        }
+    };
+}
