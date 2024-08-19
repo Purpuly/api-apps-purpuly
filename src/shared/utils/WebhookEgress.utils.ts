@@ -1,19 +1,19 @@
 import { createHmac } from "node:crypto";
 import axios, { AxiosInstance } from "axios";
 
-const HMAC_SIGNATURE_ALGORITHM: string = "sha256";
-const HMAC_SIGNATURE_HEADER: string = "X-Signature";
-const WEBHOOK_EGRESS_UA: string = "purpuly-webhook-egress/1.0";
-
-const baseWebhookEgressInstance: AxiosInstance = axios.create({
-    headers: {
-        "Content-Type": "application/json",
-        "X-Powered-By": "Purpuly Services",
-        "User-Agent": WEBHOOK_EGRESS_UA,
-    },
-});
-
 export default class WebhookEgressUtils {
+    private static HMAC_SIGNATURE_ALGORITHM: string = "sha256";
+    private static HMAC_SIGNATURE_HEADER: string = "x-signature";
+    private static WEBHOOK_EGRESS_UA: string = "purpuly-webhook-egress/1.0";
+
+    private static baseWebhookEgressInstance: AxiosInstance = axios.create({
+        headers: {
+            "Content-Type": "application/json",
+            "X-Powered-By": "Purpuly Services",
+            "User-Agent": WebhookEgressUtils.WEBHOOK_EGRESS_UA,
+        },
+    });
+
     public static async triggerWebhook(
         url: string,
         secret: string,
@@ -22,9 +22,9 @@ export default class WebhookEgressUtils {
         const signature: string =
             WebhookEgressUtils.createHMACSignature(secret, JSON.stringify(data));
 
-        await baseWebhookEgressInstance.post(url, data, {
+        await WebhookEgressUtils.baseWebhookEgressInstance.post(url, data, {
             headers: {
-                [HMAC_SIGNATURE_HEADER]: signature,
+                [WebhookEgressUtils.HMAC_SIGNATURE_HEADER]: signature,
             },
         });
     }
@@ -33,6 +33,6 @@ export default class WebhookEgressUtils {
         secret: string,
         data: string
     ): string {
-        return createHmac(HMAC_SIGNATURE_ALGORITHM, secret).update(data).digest("hex");
+        return createHmac(WebhookEgressUtils.HMAC_SIGNATURE_ALGORITHM, secret).update(data).digest("hex");
     }
 }
