@@ -12,7 +12,7 @@ const applications: Application[] = [
         status: "approved",
         security_webhook_is_enabled: true,
         security_webhook_secret: "e9hHLvNCKuLFmBDll34xGaLLEqjk+BIV",
-        security_webhook_url: "http://localhost:8080/api/test_id/reset-password/test",
+        security_webhook_url: "http://localhost:8080/api/service/user/password-mutation/webhook",
     },
 ];
 

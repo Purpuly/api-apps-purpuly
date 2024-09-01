@@ -7,7 +7,7 @@ const REQUIRED_CONFIGURATION: string[] = [
 const PURPULY_ONLY_ENDPOINTS_REGEX: string =
   '^(https?://(?:.+.)?purpuly.com(?::d{1,5})?)$';
 
-const FALLBACK_PORT: number = 8080;
+const FALLBACK_PORT: number = 9090;
 
 const APPLICATION_LISTENING_PORT: string | number = process.env.PORT || FALLBACK_PORT;
 
